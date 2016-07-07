@@ -1,17 +1,17 @@
 //main function to be called 'on load' of index.html <body>
 function dataViz() {
-  d3.csv("data/EU-referendum-result-data.csv", function(data) {
-    createViz(d3.map().set(data.Area, data.Pct_Remain));
-  })
+  //d3.csv("data/EU-referendum-result-data.csv", function(data) {
+    createViz();
+  //})
 }
 
-function createViz(incomingData) {
+function createViz() {
   var width = 460;
   var height = 560;
   var active = d3.select(null);
 
   var projection = d3.geoAlbers()
-                      .center([0, 55.4])
+                      .center([-3.0, 55.4])
                       .rotate([4.4, 0])
                       .parallels([50, 60])
                       .scale(2500)
@@ -47,12 +47,6 @@ function createViz(incomingData) {
         return a !== b; }))
       .attr("class", "mesh")
       .attr("d", path);
-
-    // g.selectAll("path")
-    //   .data(incomingData)
-    //   .enter()
-    //   .append("path")
-    //   .attr("id", function(d) { return d.Area_Code });
   });
 
   //create a div for modal dialog box for results
@@ -60,26 +54,23 @@ function createViz(incomingData) {
     d3.select("body").append("div").attr("id", "modal").html(data);
   });
 
-  // //add a click listener to populate results
-  // g.on("click", )
-
   function clicked(d) {
     if (active.node() === this) return reset();
-    active.classed("active", false);
-    active = d3.select(this).classed("active", true);
-    d3.select("table").attr("visibility","visible")
+    active.classed("remain", false);
+    active = d3.select(this).classed("remain", true);
+    console.log(parseFloat(d.properties.pctr));
 
     var bounds = path.bounds(d),
       dx = bounds[1][0] - bounds[0][0],
       dy = bounds[1][1] - bounds[0][1],
       x = (bounds[0][0] + bounds[1][0]) / 2,
       y = (bounds[0][1] + bounds[1][1]) / 2,
-      scale = .5 / Math.max(dx / width, dy / height),
+      scale = 0.9 / Math.max(dx / width, dy / height),
       translate = [width / 2 - scale * x, height / 2 - scale * y];
 
     g.transition()
       .duration(750)
-      .style("stroke-width", "1.5px")
+      .style("stroke-width", "0.5px")
       .attr("transform", "translate(" + translate + ")scale(" + scale + ")");
 
     var name = d.properties.name,
@@ -92,7 +83,11 @@ function createViz(incomingData) {
         pctj = d.properties.pctj,
         total = d.properties.total;
 
-		return document.getElementById('area').innerHTML=name,
+		return document.getElementById('stat1').innerHTML="Remain",
+            document.getElementById('stat2').innerHTML="Leave",
+            document.getElementById('stat3').innerHTML="Rejected",
+            document.getElementById('stat4').innerHTML="Total",
+            document.getElementById('area').innerHTML=name,
             document.getElementById('region').innerHTML="("+region+")",
             document.getElementById('remain').innerHTML=parseFloat(remain),
             document.getElementById('pctr').innerHTML=parseFloat(pctr)+"%",
@@ -104,7 +99,7 @@ function createViz(incomingData) {
   }
 
   function reset() {
-    active.classed("active", false);
+    active.classed("remain", false);
     active = d3.select(null);
 
     g.transition()
@@ -112,7 +107,11 @@ function createViz(incomingData) {
       .style("stroke-width", "0.5px")
       .attr("transform", "");
 
-    return document.getElementById('area').innerHTML="",
+    return document.getElementById('stat1').innerHTML="",
+            document.getElementById('stat2').innerHTML="",
+            document.getElementById('stat3').innerHTML="",
+            document.getElementById('stat4').innerHTML="",
+            document.getElementById('area').innerHTML="",
             document.getElementById('region').innerHTML="",
             document.getElementById('remain').innerHTML="",
             document.getElementById('pctr').innerHTML="",
