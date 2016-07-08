@@ -3,20 +3,20 @@
   pointer-events: all;
 }
 
-.feature {
+path {
   fill: #ccc;
   cursor: pointer;
 }
 
-.feature.active {
+.active {
   fill: orange;
 }
 
-.feature.remain {
+.active.remain {
   fill: #FFE900;
 }
 
-.feature.leave {
+.active.leave {
   fill: #16B5E5;
 }
 

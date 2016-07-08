@@ -40,7 +40,9 @@ function createViz() {
       .enter().append("path")
       .attr("d", path)
       .attr("class","feature")
-      .on("click",clicked);
+      .attr("class",voteToggle);
+
+    g.selectAll("path").on("click",clicked);
 
     g.append("path")
       .datum(topojson.mesh(uk, uk.objects.UKdata2, function(a, b) {
@@ -54,10 +56,18 @@ function createViz() {
     d3.select("body").append("div").attr("id", "modal").html(data);
   });
 
+  function voteToggle(d) {
+    if (parseFloat(d.properties.pctr) > 50) {
+      return "remain"
+    } else {
+      return "leave"
+    }
+  }
+
   function clicked(d) {
     if (active.node() === this) return reset();
-    active.classed("remain", false);
-    active = d3.select(this).classed("remain", true);
+    active.classed("active", false);
+    active = d3.select(this).classed("active", true);
     console.log(parseFloat(d.properties.pctr));
 
     var bounds = path.bounds(d),
@@ -99,7 +109,7 @@ function createViz() {
   }
 
   function reset() {
-    active.classed("remain", false);
+    active.classed("active", false);
     active = d3.select(null);
 
     g.transition()
