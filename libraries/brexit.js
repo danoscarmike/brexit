@@ -10,6 +10,12 @@ function createViz() {
   var height = 560;
   var active = d3.select(null);
 
+  var zoom = d3.zoom()
+    .translateBy()
+    .scaleBy(this,1)
+    .scaleExtent([1, 8])
+    .on("zoom", zoomed);
+
   var projection = d3.geoAlbers()
                       .center([-3.0, 55.4])
                       .rotate([4.4, 0])
@@ -31,6 +37,10 @@ function createViz() {
 
   var g = svg.append("g")
       .style("stroke-width", "1.5px");
+
+  svg
+    .call(zoom.on("zoom", zoomed)) // delete this line to disable free zooming
+    .call(zoom.event);
 
   d3.json("resources/UKdataTopo2b.json", function(error, uk) {
     if (error) return console.error(error);
@@ -81,7 +91,12 @@ function createViz() {
     g.transition()
       .duration(750)
       .style("stroke-width", "0.5px")
+      // .attr("transform", "translate(" + transform.x + "," + transform.y + ") scale(" + transform.k + ")");
       .attr("transform", "translate(" + translate + ")scale(" + scale + ")");
+
+    // svg.transition()
+    //   .duration(750)
+    //   .call(zoom.on("zoom", zoomed));
 
     var name = d.properties.name,
         region = d.properties.region,
@@ -132,5 +147,16 @@ function createViz() {
             document.getElementById('total').innerHTML="";
 
   }
+
+  function zoomed() {
+  g.style("stroke-width", 1.5 / d3.event.scale + "px");
+  g.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+}
+
+// If the drag behavior prevents the default click,
+// also stop propagation so we don’t click-to-zoom.
+function stopped() {
+  if (d3.event.defaultPrevented) d3.event.stopPropagation();
+}
 
 }
