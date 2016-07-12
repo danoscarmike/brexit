@@ -11,19 +11,19 @@ function dataViz() {
                       .center([-3.2, 55.4])
                       .rotate([4.4, 0])
                       .parallels([50, 60])
-                      .scale(2500)
-                      .translate([widthUK / 4, heightUK / 2]);
+                      .scale(4000)
+                      .translate([widthUK / 2, heightUK / 2]);
 
   var projectionGI = d3.geoAlbers()
                       .center([-5.3,36.1])
                       .rotate([4.4, 0])
                       .parallels([30, 40])
                       .scale(5000)
-                      .translate([widthUK / 4, heightUK / 2]);
+                      .translate([widthUK / 2, heightUK / 2]);
 
   //d3.v4 zoom object, set scale extent to 50
   var zoom = d3.zoom()
-    .translateExtent([0,0],[widthUK,heightUK])
+    .translateExtent([0,0],[widthUK/2,heightUK/2])
     .scaleExtent([1,50])
     .on("zoom", zoomed);
 
