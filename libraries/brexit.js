@@ -2,8 +2,8 @@
 function dataViz() {
 
   //set common variables
-  var width = 500;
-  var height = 500;
+  var widthUK = 500;
+  var heightUK = 500;
   var active = d3.select(null);
 
   //initiate projection for United Kingdom
@@ -12,48 +12,75 @@ function dataViz() {
                       .rotate([4.4, 0])
                       .parallels([50, 60])
                       .scale(2500)
-                      .translate([width / 4, height / 2]);
+                      .translate([widthUK / 4, heightUK / 2]);
+
+  var projectionGI = d3.geoAlbers()
+                      .center([-5.3,36.1])
+                      .rotate([4.4, 0])
+                      .parallels([30, 40])
+                      .scale(5000)
+                      .translate([widthUK / 4, heightUK / 2]);
 
   //d3.v4 zoom object, set scale extent to 50
   var zoom = d3.zoom()
-    .translateExtent([0,0],[width,height])
+    .translateExtent([0,0],[widthUK,heightUK])
     .scaleExtent([1,50])
     .on("zoom", zoomed);
 
-  var path = d3.geoPath().projection(projection);
+  var pathUK = d3.geoPath().projection(projection);
+  var pathGI = d3.geoPath().projection(projectionGI);
 
-  var svg = d3.select("body").append("svg")
-              .attr("width",width)
-              .attr("height",height)
+  var svgUK = d3.select("body").append("svg")
+              .attr("width",widthUK)
+              .attr("height",heightUK)
               .on("clicked",stopped,true);
 
-  svg.append("rect")
+  svgUK.append("rect")
     .attr("class", "background")
-    .attr("width", width)
-    .attr("height", height)
+    .attr("width", widthUK)
+    .attr("height", heightUK)
     .on("click", reset);
 
-  var g = svg.append("g").style("stroke-width", "0.5px");
+  var g = svgUK.append("g").style("stroke-width", "0.5px");
+  var g2 = svgUK.append("g").style("stroke-width", "0.5px");
 
-  svg.call(zoom);
+  svgUK.call(zoom);
 
   //import the topojson file for UK geography and referendum results
-  d3.json("resources/UKdataTopo2b.json", function(error, uk) {
+  d3.json("resources/UKtopo.json", function(error, uk) {
     if (error) throw error;
 
     g.selectAll("path")
-      .data(topojson.feature(uk, uk.objects.UKdata2).features)
+      .data(topojson.feature(uk, uk.objects.UK).features)
       .enter().append("path")
-      .attr("d", path)
+      .attr("d", pathUK)
       .attr("class",voteToggle)
       .on("click",clicked);
 
     g.append("path")
-      .datum(topojson.mesh(uk, uk.objects.UKdata2, function(a, b) {
+      .datum(topojson.mesh(uk, uk.objects.UK, function(a, b) {
         return a !== b; }))
       .attr("class", "mesh")
-      .attr("d", path);
+      .attr("d", pathUK);
   });
+
+  //import the topojson file for Gibraltar geography and referendum results
+  // d3.json("resources/GItopo.json", function(error, gi) {
+  //   if (error) throw error;
+  //
+  //   g.selectAll("path")
+  //     .data(topojson.feature(gi, gi.objects.GI).features)
+  //     .enter().append("path")
+  //     .attr("d", pathGI)
+  //     .attr("class",voteToggle)
+  //     .on("click",clicked);
+  //
+  //   g.append("path")
+  //     .datum(topojson.mesh(gi, gi.objects.GI, function(a, b) {
+  //       return a !== b; }))
+  //     .attr("class", "mesh")
+  //     .attr("d", pathGI);
+  // });
 
   //create a div for the modal dialog box which will contain the area's results
   d3.text("resources/modal.html", function(data) {
@@ -65,34 +92,29 @@ function dataViz() {
     active.classed("active", false);
     active = d3.select(this).classed("active", true);
 
-    var bounds = path.bounds(d),
+    var bounds = pathUK.bounds(d),
       dx = bounds[1][0] - bounds[0][0],
       dy = bounds[1][1] - bounds[0][1],
       x = (bounds[0][0] + bounds[1][0]) / 2,
       y = (bounds[0][1] + bounds[1][1]) / 2,
-      scale = 0.9 / Math.max(dx / width, dy / height),
-      tx = width / 2 - scale * x
-      ty = height / 2 - scale * y;
+      scale = 0.9 / Math.max(dx / widthUK, dy / heightUK),
+      tx = widthUK / 2 - scale * x
+      ty = heightUK / 2 - scale * y;
 
-    svg.transition()
+    svgUK.transition()
       .duration(750)
       .style("stroke-width", 0.5/scale+"px")
       .call(zoom.transform,d3.zoomTransform(this).translate(tx,ty).scale(scale));
 
-    // svg.transition()
-    //   .duration(750)
-    //   .attr("transform", d3.zoomTransform(this).translate(tx,ty).scale(scale))
-    //   .style("stroke-width", 0.5/scale+"px");
-
-    var name = d.properties.name,
-        region = d.properties.region,
-        remain = d.properties.remain,
-        pctr = d.properties.pctr,
-        leave = d.properties.leave,
-        pctl = d.properties.pctl,
-        rejected = d.properties.rejected,
-        pctj = d.properties.pctj,
-        total = d.properties.total;
+    var name = d.properties.NAME,
+        region = d.properties.Region,
+        remain = d.properties.Remain,
+        pctr = d.properties.Pct_Remain,
+        leave = d.properties.Leave,
+        pctl = d.properties.Pct_Leave,
+        rejected = d.properties.Rejected_B,
+        pctj = d.properties.Pct_Reject,
+        total = d.properties.Votes_Cast;
 
 		return document.getElementById('stat1').innerHTML="Remain",
             document.getElementById('stat2').innerHTML="Leave",
@@ -113,15 +135,10 @@ function dataViz() {
     active.classed("active", false);
     active = d3.select(null);
 
-    svg.transition()
+    svgUK.transition()
       .duration(750)
       .style("stroke-width", "0.5px")
       .call(zoom.transform,d3.zoomIdentity);
-
-    // var node = document.getElementById('modal');
-    // while (node.hasChildNodes()) {
-    //   node.removeChild(node.firstChild);
-    // }
 
     return document.getElementById('stat1').innerHTML="",
             document.getElementById('stat2').innerHTML="",
@@ -154,7 +171,7 @@ function dataViz() {
   //Helper function to determine whether area voted to remain or
   //leave the EU.  Result is applied as the class of the area's path
   function voteToggle(d) {
-    if (parseFloat(d.properties.pctr) > 50) {
+    if (parseFloat(d.properties.Pct_Remain) > 50) {
       return "remain"
     } else {
       return "leave"
