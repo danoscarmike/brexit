@@ -3,20 +3,20 @@ function dataViz() {
 
   //set common variables
   var widthUK = 960;
-  var heightUK = 600;
+  var heightUK = 1160;
   var active = d3.select(null);
 
   //initiate projection for United Kingdom
   var projection = d3.geoAlbers()
-                      .center([-3.2, 55.4])
+                      .center([0, 55.4])
                       .rotate([4.4, 0])
                       .parallels([50, 60])
-                      .scale(4000)
+                      .scale(6000)
                       .translate([widthUK / 2, heightUK / 2]);
 
   var projectionGI = d3.geoAlbers()
-                      .center([-5.3,36.1])
-                      .rotate([4.4, 0])
+                      .center([0,55.4])
+                      .rotate([4.4,0])
                       .parallels([30, 40])
                       .scale(5000)
                       .translate([widthUK / 2, heightUK / 2]);
