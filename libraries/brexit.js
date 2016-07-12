@@ -3,23 +3,23 @@ function dataViz() {
 
   //set common variables
   var widthUK = 960;
-  var heightUK = 1160;
+  var heightUK = 1060;
   var active = d3.select(null);
 
   //initiate projection for United Kingdom
   var projection = d3.geoAlbers()
-                      .center([0, 55.4])
+                      .center([0, 54.5])
                       .rotate([4.4, 0])
                       .parallels([50, 60])
                       .scale(6000)
                       .translate([widthUK / 2, heightUK / 2]);
 
-  var projectionGI = d3.geoAlbers()
-                      .center([0,55.4])
-                      .rotate([4.4,0])
-                      .parallels([30, 40])
-                      .scale(5000)
-                      .translate([widthUK / 2, heightUK / 2]);
+  // var projectionGI = d3.geoAlbers()
+  //                     .center([0,55.4])
+  //                     .rotate([4.4,0])
+  //                     .parallels([30, 40])
+  //                     .scale(5000)
+  //                     .translate([widthUK / 2, heightUK / 2]);
 
   //d3.v4 zoom object, set scale extent to 50
   var zoom = d3.zoom()
@@ -28,7 +28,7 @@ function dataViz() {
     .on("zoom", zoomed);
 
   var pathUK = d3.geoPath().projection(projection);
-  var pathGI = d3.geoPath().projection(projectionGI);
+  // var pathGI = d3.geoPath().projection(projectionGI);
 
   var svgUK = d3.select("body").append("svg")
               .attr("width",widthUK)
@@ -42,7 +42,7 @@ function dataViz() {
     .on("click", reset);
 
   var g = svgUK.append("g").style("stroke-width", "0.5px");
-  var g2 = svgUK.append("g").style("stroke-width", "0.5px");
+  // var g2 = svgUK.append("g").style("stroke-width", "0.5px");
 
   svgUK.call(zoom);
 
