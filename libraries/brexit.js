@@ -11,8 +11,8 @@ function dataViz() {
                       .center([0, 54.5])
                       .rotate([4.4, 0])
                       .parallels([50, 60])
-                      .scale(6000)
-                      .translate([widthUK / 2, heightUK / 2]);
+                      .scale(2000)
+                      // .translate([widthUK / 2, heightUK / 2]);
 
   // var projectionGI = d3.geoAlbers()
   //                     .center([0,55.4])
@@ -30,15 +30,24 @@ function dataViz() {
   var pathUK = d3.geoPath().projection(projection);
   // var pathGI = d3.geoPath().projection(projectionGI);
 
-  var svgUK = d3.select("body").append("svg")
-              .attr("width",widthUK)
-              .attr("height",heightUK)
+  var svgUK = d3.select("div#viz")
+              .classed("svg-container",true)
+              .append("svg")
+              .attr("preserveAspectRatio", "xMaxYMin meet")
+              .attr("viewBox", "0 0 600 400")
+              .classed("svg-content-responsive",true)
+              // .attr("width",widthUK)
+              // .attr("height",heightUK)
+              // .attr("width","100%")
+              // .attr("height","100%")
               .on("clicked",stopped,true);
 
   svgUK.append("rect")
     .attr("class", "background")
-    .attr("width", widthUK)
-    .attr("height", heightUK)
+    // .attr("width", widthUK)
+    // .attr("height", heightUK)
+    .attr("width", "100%")
+    .attr("height", "100%")
     .on("click", reset);
 
   var g = svgUK.append("g").style("stroke-width", "0.5px");
