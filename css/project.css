@@ -1,15 +1,58 @@
+.project.header {
+  margin-top: 3rem;
+  text-align: left; }
+
+.quote {
+  margin: 0 50px 0 50px;
+}
+
+footer {
+  margin-top: 50px;
+  border-width: 1px 0 0 0;
+  border-style: solid;
+  border-color: #51b603;
+}
+
+nav ul {
+  list-style: none;
+  font-weight: normal;
+}
+
+nav ul li {
+  display: inline;
+  margin-right: 20px;
+  /*flow-into: 100%;*/
+}
+
+footer ul {
+  list-style: none;
+  font-weight: normal;
+}
+
+footer ul li {
+  display: inline;
+  margin-right: 20px;
+  /*flow-into: 100%;*/
+}
+
+img.project {
+  width: 100%;
+}
+
+/* Larger than phone */
+@media (min-width: 750px) {
+  .project.header {
+    margin-top: 6rem; }
+}
+
 .background {
-  fill: none;
+  fill: blue;
   pointer-events: all;
 }
 
 path {
   fill: #ccc;
   cursor: pointer;
-}
-
-.active {
-  fill: orange;
 }
 
 .active.remain {
@@ -23,13 +66,11 @@ path {
 .mesh {
   fill: none;
   stroke: #fff;
-  /*stroke-width: 0.5px;*/
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 #modal {
-  /*visibility: hidden;;*/
   position: fixed;
   left: 20px;
   top: 20px;
@@ -45,12 +86,7 @@ path {
   text-align: right;
 }
 
-/*tr:nth-child(even) {
-  background-color: #f2f2f2
-}*/
-
 tr {
-  font-family: helvetica, sans-serif;
   border-bottom: 1px solid #ddd;
 }
 
@@ -58,15 +94,15 @@ td {
   font-size: 10px;
 }
 
-svg {
+/*svg {
   position: relative;
-}
+}*/
 
-.svg-container {
+/*.svg-container {
     display: inline-block;
     position: relative;
     width: 100%;
-    padding-bottom: 100%; /* aspect ratio */
+    padding-bottom: 75%;
     vertical-align: top;
     overflow: hidden;
 }
@@ -75,4 +111,4 @@ svg {
     position: absolute;
     top: 10px;
     left: 0;
-}
+}*/

@@ -2,38 +2,33 @@
 function dataViz() {
 
   //set common variables
-  var widthUK = 960;
-  var heightUK = 1060;
+  var widthUK = parseInt(d3.select("#map").style("width"));
+  // var widthUK = 960;
+  var heightUK = parseInt(d3.select('#map').style("height"));
+  // var heightUK = widthUK * mapRatio;
+  // var heightUK = 1060;
   var active = d3.select(null);
 
   //initiate projection for United Kingdom
   var projection = d3.geoAlbers()
-                      .center([0, 54.5])
-                      .rotate([4.4, 0])
+                      .center([0, 55.5])
+                      .rotate([0, 0, 0])
                       .parallels([50, 60])
-                      .scale(2000)
-                      // .translate([widthUK / 2, heightUK / 2]);
-
-  // var projectionGI = d3.geoAlbers()
-  //                     .center([0,55.4])
-  //                     .rotate([4.4,0])
-  //                     .parallels([30, 40])
-  //                     .scale(5000)
-  //                     .translate([widthUK / 2, heightUK / 2]);
+                      .scale(widthUK*2.75)
+                      .translate([widthUK / 2, heightUK / 2]);
 
   //d3.v4 zoom object, set scale extent to 50
   var zoom = d3.zoom()
-    .translateExtent([0,0],[widthUK/2,heightUK/2])
+    // .translateExtent([0,0],[widthUK/2,heightUK/2])
     .scaleExtent([1,50])
     .on("zoom", zoomed);
 
   var pathUK = d3.geoPath().projection(projection);
-  // var pathGI = d3.geoPath().projection(projectionGI);
 
-  var svgUK = d3.select("div#viz")
+  var svgUK = d3.select("#map")
               .classed("svg-container",true)
               .append("svg")
-              .attr("preserveAspectRatio", "xMaxYMin meet")
+              .attr("preserveAspectRatio", "xMinYMin meet")
               .attr("viewBox", "0 0 600 400")
               .classed("svg-content-responsive",true)
               // .attr("width",widthUK)
@@ -72,24 +67,6 @@ function dataViz() {
       .attr("class", "mesh")
       .attr("d", pathUK);
   });
-
-  //import the topojson file for Gibraltar geography and referendum results
-  // d3.json("resources/GItopo.json", function(error, gi) {
-  //   if (error) throw error;
-  //
-  //   g.selectAll("path")
-  //     .data(topojson.feature(gi, gi.objects.GI).features)
-  //     .enter().append("path")
-  //     .attr("d", pathGI)
-  //     .attr("class",voteToggle)
-  //     .on("click",clicked);
-  //
-  //   g.append("path")
-  //     .datum(topojson.mesh(gi, gi.objects.GI, function(a, b) {
-  //       return a !== b; }))
-  //     .attr("class", "mesh")
-  //     .attr("d", pathGI);
-  // });
 
   //create a div for the modal dialog box which will contain the area's results
   d3.text("resources/modal.html", function(data) {
