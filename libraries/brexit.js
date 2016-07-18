@@ -10,16 +10,7 @@ function dataViz() {
   var projection = d3.geoAlbers()
                       .center([0, 54.5])
                       .rotate([4.4, 0])
-                      .parallels([50, 60])
-                      .scale(6000)
-                      .translate([widthUK / 2, heightUK / 2]);
-
-  // var projectionGI = d3.geoAlbers()
-  //                     .center([0,55.4])
-  //                     .rotate([4.4,0])
-  //                     .parallels([30, 40])
-  //                     .scale(5000)
-  //                     .translate([widthUK / 2, heightUK / 2]);
+                      .parallels([50, 60]);
 
   //d3.v4 zoom object, set scale extent to 50
   var zoom = d3.zoom()
@@ -50,6 +41,23 @@ function dataViz() {
   d3.json("resources/UKtopo.json", function(error, uk) {
     if (error) throw error;
 
+    projection
+      .scale(1)
+      .translate([0,0]);
+
+    var bounds = pathUK.bounds(topojson.feature(uk, uk.objects.UK)),
+      dx = bounds[1][0] - bounds[0][0],
+      dy = bounds[1][1] - bounds[0][1],
+      x = (bounds[0][0] + bounds[1][0]) / 2,
+      y = (bounds[0][1] + bounds[1][1]) / 2,
+      scale = 0.9 / Math.max(dx / widthUK, dy / heightUK),
+      tx = widthUK / 2 - scale * x
+      ty = heightUK / 2 - scale * y;
+
+    projection
+      .scale(scale)
+      .translate([tx,ty]);
+
     g.selectAll("path")
       .data(topojson.feature(uk, uk.objects.UK).features)
       .enter().append("path")
@@ -63,24 +71,6 @@ function dataViz() {
       .attr("class", "mesh")
       .attr("d", pathUK);
   });
-
-  //import the topojson file for Gibraltar geography and referendum results
-  // d3.json("resources/GItopo.json", function(error, gi) {
-  //   if (error) throw error;
-  //
-  //   g.selectAll("path")
-  //     .data(topojson.feature(gi, gi.objects.GI).features)
-  //     .enter().append("path")
-  //     .attr("d", pathGI)
-  //     .attr("class",voteToggle)
-  //     .on("click",clicked);
-  //
-  //   g.append("path")
-  //     .datum(topojson.mesh(gi, gi.objects.GI, function(a, b) {
-  //       return a !== b; }))
-  //     .attr("class", "mesh")
-  //     .attr("d", pathGI);
-  // });
 
   //create a div for the modal dialog box which will contain the area's results
   d3.text("resources/modal.html", function(data) {
