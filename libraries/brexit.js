@@ -2,8 +2,8 @@
 function dataViz() {
 
   //set common variables
-  var widthUK = 960;
-  var heightUK = 1060;
+  var widthUK = 480;
+  var heightUK = 960;
   var active = d3.select(null);
 
   //initiate projection for United Kingdom
