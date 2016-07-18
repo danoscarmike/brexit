@@ -4,18 +4,19 @@ function dataViz() {
   //set common variables
   var widthUK = parseInt(d3.select("#map").style("width"));
   // var widthUK = 960;
-  var heightUK = parseInt(d3.select('#map').style("height"));
-  // var heightUK = widthUK * mapRatio;
+  // var heightUK = parseInt(d3.select('#map').style("height"));
+  var mapRatio = 2;
+  var heightUK = widthUK * mapRatio;
   // var heightUK = 1060;
   var active = d3.select(null);
 
   //initiate projection for United Kingdom
   var projection = d3.geoAlbers()
-                      .center([0, 55.5])
-                      .rotate([0, 0, 0])
-                      .parallels([50, 60])
-                      .scale(widthUK*2.75)
-                      .translate([widthUK / 2, heightUK / 2]);
+                      // .center([0, 55.5])
+                      .rotate([4.4, 0, 0])
+                      .parallels([50, 60]);
+                      // .scale(widthUK*2)
+                      // .translate([widthUK / 2, heightUK / 2]);
 
   //d3.v4 zoom object, set scale extent to 50
   var zoom = d3.zoom()
@@ -28,21 +29,17 @@ function dataViz() {
   var svgUK = d3.select("#map")
               .classed("svg-container",true)
               .append("svg")
-              .attr("preserveAspectRatio", "xMinYMin meet")
-              .attr("viewBox", "0 0 600 400")
+              // .attr("preserveAspectRatio", "xMinYMin meet")
+              // .attr("viewBox", "0 0 400 600")
               .classed("svg-content-responsive",true)
-              // .attr("width",widthUK)
-              // .attr("height",heightUK)
-              // .attr("width","100%")
-              // .attr("height","100%")
+              .attr("width",widthUK)
+              .attr("height",heightUK)
               .on("clicked",stopped,true);
 
   svgUK.append("rect")
     .attr("class", "background")
-    // .attr("width", widthUK)
-    // .attr("height", heightUK)
-    .attr("width", "100%")
-    .attr("height", "100%")
+    .attr("width", widthUK)
+    .attr("height", heightUK)
     .on("click", reset);
 
   var g = svgUK.append("g").style("stroke-width", "0.5px");
@@ -53,6 +50,23 @@ function dataViz() {
   //import the topojson file for UK geography and referendum results
   d3.json("resources/UKtopo.json", function(error, uk) {
     if (error) throw error;
+
+    projection
+      .scale(1)
+      .translate([0,0]);
+
+    var bounds = pathUK.bounds(topojson.feature(uk, uk.objects.UK)),
+      dx = bounds[1][0] - bounds[0][0],
+      dy = bounds[1][1] - bounds[0][1],
+      x = (bounds[0][0] + bounds[1][0]) / 2,
+      y = (bounds[0][1] + bounds[1][1]) / 2,
+      scale = 0.9 / Math.max(dx / widthUK, dy / heightUK),
+      tx = widthUK / 2 - scale * x
+      ty = heightUK / 2 - scale * y;
+
+    projection
+      .scale(scale)
+      .translate([tx,ty]);
 
     g.selectAll("path")
       .data(topojson.feature(uk, uk.objects.UK).features)
@@ -163,5 +177,31 @@ function dataViz() {
       return "leave"
     }
   }
+
+//   d3.select(window).on('resize', resize);
+//
+// function resize() {
+//     // adjust things when the window size changes
+//     width = parseInt(d3.select('#map').style('width'));
+//     // width = width - margin.left - margin.right;
+//     mapRatio = 2;
+//     height = width * mapRatio;
+//
+//     // update projection
+//     projection
+//         .translate([width / 2, height / 2])
+//         .scale(width);
+//
+//     var map = d3.select("#map")
+//
+//     // resize the map container
+//     map
+//         .style('width', width + 'px')
+//         .style('height', height + 'px');
+//
+//     // resize the map
+//     map.selectAll('.remain').attr('d', pathUK);
+//     map.selectAll('.leave').attr('d', pathUK);
+// }
 
 }
