@@ -36,6 +36,10 @@ function dataViz() {
 
   svgUK.call(zoom);
 
+  var nameTip = svgUK.append("rect")
+    .attr("class", "tooltip")
+    .style("fill-opacity", 0);
+
   //import the topojson file for UK geography and referendum results
   d3.json("resources/UKtopo.json", function(error, uk) {
     if (error) throw error;
@@ -62,6 +66,23 @@ function dataViz() {
       .enter().append("path")
       .attr("d", pathUK)
       .attr("class",voteToggle)
+      .on("mouseover", tooltipName)
+      .on('mousemove', function(d) {
+            nameTip.classed('hidden', false)
+                .attr('x', d3.mouse(svgUK.node())[0] + 15 + 'px')
+                .attr('y', d3.mouse(svgUK.node())[1] - 35 + 'px')
+            nameTip.append("text")
+                .attr("fill","black")
+                .attr("font-size","48px")
+                .attr("x", 25)
+                .attr("y", 10)
+                .text("test");
+              })
+      .on("mouseout", function(d) {
+            nameTip.transition()
+                .duration(200)
+                .style("fill-opacity", 0)
+              })
       .on("click",clicked);
 
     g.append("path")
@@ -76,7 +97,27 @@ function dataViz() {
     d3.select("body").append("div").attr("id", "modal").html(data);
   });
 
+  function tooltipName(d) {
+    nameTip.transition()
+          .duration(200)
+          .style("fill-opacity", 0.95)
+          .attr('x', d3.mouse(svgUK.node())[0] + 15 + 'px')
+          .attr('y', d3.mouse(svgUK.node())[1] - 35 + 'px');
+
+    nameTip.append("text")
+        .attr("x",25)
+        .attr("y",10)
+        .attr("fill","black")
+        .attr("font-size","12px")
+        .text("test");
+  }
+
   function clicked(d) {
+    //turn off visibility of tooltip
+    nameTip.style('fill-opacity', 0);
+    //stop propagation so tooltip doesn't reappear until reset
+    // d3.event.stopPropagation();
+
     if (active.node() === this) return reset();
     active.classed("active", false);
     active = d3.select(this).classed("active", true);

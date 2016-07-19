@@ -79,6 +79,20 @@ path {
   background: white;
 }
 
+.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 100px;
+    height: 28px;
+    padding: 2px;
+    font: 12px sans-serif;
+    fill: lightsteelblue;
+    border: 0px;
+    rx: 4px;
+    ry: 4px;
+    pointer-events: none;
+}
+
 .data {
   text-align: right;
 }
