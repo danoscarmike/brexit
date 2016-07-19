@@ -41,6 +41,11 @@ function dataViz() {
     .attr("class", "tooltip")
     .style("opacity", 0);
 
+  var statPanel = d3.select("#map")
+    .append("div")
+    .attr("class", "dataPanel")
+    .style("opacity", 0);
+
   //import the topojson file for UK geography and referendum results
   d3.json("resources/UKtopo.json", function(error, uk) {
     if (error) throw error;
@@ -80,24 +85,14 @@ function dataViz() {
       .attr("d", pathUK);
   });
 
-  //create a div for the modal dialog box which will contain the area's results
-  d3.text("resources/modal.html", function(data) {
-    d3.select("body").append("div").attr("id", "modal").html(data);
-  });
-
   function tooltipName(d) {
-    if(d3.select(this).attr("locked") === "locked") {
-      console.log("mouseover check: TRUE (locked)");
-    }
-    else {
-      console.log("mouseover check: FALSE (not locked)");
+    if(d3.select(this).attr("locked") === "open") {
       nameTip.transition()
             .duration(200)
             .style("opacity", 0.75);
       nameTip.html(d.properties.NAME)
           .style('left', d3.mouse(this)[0] + 'px')
           .style('top', d3.mouse(this)[1] - 35 + 'px');
-
     }
   }
 
@@ -113,72 +108,87 @@ function dataViz() {
 
     if (active.node() === this) return reset();
     active.classed("active", false);
-    active = d3.select(this).classed("active", true)
-              .attr("locked","locked");
+    active = d3.select(this).classed("active", true);
+    d3.selectAll("path").attr("locked","locked");
+
+    statPanel.transition()
+      .duration(750)
+      .style("opacity", 0.8)
+      .style("left",0)
+      .style("top",heightUK/2+'px')
+      .style("height", heightUK/2+'px');
+
+    // statPanel.html(d.properties.NAME);
+    statPanel.html(d3.text("resources/modal.html"));
 
     var bounds = pathUK.bounds(d),
       dx = bounds[1][0] - bounds[0][0],
       dy = bounds[1][1] - bounds[0][1],
       x = (bounds[0][0] + bounds[1][0]) / 2,
       y = (bounds[0][1] + bounds[1][1]) / 2,
-      scale = 0.9 / Math.max(dx / widthUK, dy / heightUK),
+      //scale and translate to fit in top half of svg
+      scale = 0.5 / Math.max(dx / widthUK, dy / heightUK),
       tx = widthUK / 2 - scale * x
-      ty = heightUK / 2 - scale * y;
+      ty = heightUK / 4 - scale * y;
 
     svgUK.transition()
       .duration(750)
       .style("stroke-width", 0.5/scale+"px")
       .call(zoom.transform,d3.zoomTransform(this).translate(tx,ty).scale(scale));
 
-    // var name = d.properties.NAME,
-    //     region = d.properties.Region,
-    //     remain = d.properties.Remain,
-    //     pctr = d.properties.Pct_Remain,
-    //     leave = d.properties.Leave,
-    //     pctl = d.properties.Pct_Leave,
-    //     rejected = d.properties.Rejected_B,
-    //     pctj = d.properties.Pct_Reject,
-    //     total = d.properties.Votes_Cast;
-    //
-		// return document.getElementById('stat1').innerHTML="Remain",
-    //         document.getElementById('stat2').innerHTML="Leave",
-    //         document.getElementById('stat3').innerHTML="Rejected",
-    //         document.getElementById('stat4').innerHTML="Total",
-    //         document.getElementById('area').innerHTML=name,
-    //         document.getElementById('region').innerHTML="("+region+")",
-    //         document.getElementById('remain').innerHTML=parseFloat(remain),
-    //         document.getElementById('pctr').innerHTML=parseFloat(pctr)+"%",
-    //         document.getElementById('leave').innerHTML=parseFloat(leave),
-    //         document.getElementById('pctl').innerHTML=parseFloat(pctl)+"%",
-    //         document.getElementById('rejected').innerHTML=parseFloat(rejected),
-    //         document.getElementById('pctj').innerHTML=parseFloat(pctj)+"%",
-    //         document.getElementById('total').innerHTML=parseFloat(total);
+    //create a div for the modal dialog box which will contain the area's results
+    // d3.text("resources/modal.html", function(data) {
+    //   d3.select(".dataPanel").append("div").attr("id", "modal").html(data);
+    // });
+
+    var name = d.properties.NAME,
+        region = d.properties.Region,
+        remain = d.properties.Remain,
+        pctr = d.properties.Pct_Remain,
+        leave = d.properties.Leave,
+        pctl = d.properties.Pct_Leave,
+        rejected = d.properties.Rejected_B,
+        pctj = d.properties.Pct_Reject,
+        total = d.properties.Votes_Cast;
+
+		document.getElementById('stat1').innerHTML="Remain",
+            document.getElementById('stat2').innerHTML="Leave",
+            document.getElementById('stat3').innerHTML="Rejected",
+            document.getElementById('stat4').innerHTML="Total",
+            document.getElementById('area').innerHTML=name,
+            document.getElementById('region').innerHTML="("+region+")",
+            document.getElementById('remain').innerHTML=parseFloat(remain),
+            document.getElementById('pctr').innerHTML=parseFloat(pctr)+"%",
+            document.getElementById('leave').innerHTML=parseFloat(leave),
+            document.getElementById('pctl').innerHTML=parseFloat(pctl)+"%",
+            document.getElementById('rejected').innerHTML=parseFloat(rejected),
+            document.getElementById('pctj').innerHTML=parseFloat(pctj)+"%",
+            document.getElementById('total').innerHTML=parseFloat(total);
   }
 
   function reset() {
     active.classed("active", false);
     active = d3.select(null);
-
-    nameTip.attr("locked",false);
-
+    d3.selectAll("path").attr("locked","open");
     svgUK.transition()
       .duration(750)
       .style("stroke-width", "0.5px")
       .call(zoom.transform,d3.zoomIdentity);
+    statPanel.style('opacity', 0)
 
-    // return document.getElementById('stat1').innerHTML="",
-    //         document.getElementById('stat2').innerHTML="",
-    //         document.getElementById('stat3').innerHTML="",
-    //         document.getElementById('stat4').innerHTML="",
-    //         document.getElementById('area').innerHTML="",
-    //         document.getElementById('region').innerHTML="",
-    //         document.getElementById('remain').innerHTML="",
-    //         document.getElementById('pctr').innerHTML="",
-    //         document.getElementById('leave').innerHTML="",
-    //         document.getElementById('pctl').innerHTML="",
-    //         document.getElementById('rejected').innerHTML="",
-    //         document.getElementById('pctj').innerHTML="",
-    //         document.getElementById('total').innerHTML="";
+    return document.getElementById('stat1').innerHTML="",
+            document.getElementById('stat2').innerHTML="",
+            document.getElementById('stat3').innerHTML="",
+            document.getElementById('stat4').innerHTML="",
+            document.getElementById('area').innerHTML="",
+            document.getElementById('region').innerHTML="",
+            document.getElementById('remain').innerHTML="",
+            document.getElementById('pctr').innerHTML="",
+            document.getElementById('leave').innerHTML="",
+            document.getElementById('pctl').innerHTML="",
+            document.getElementById('rejected').innerHTML="",
+            document.getElementById('pctj').innerHTML="",
+            document.getElementById('total').innerHTML="";
   }
 
   function zoomed() {

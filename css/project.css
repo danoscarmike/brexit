@@ -84,27 +84,23 @@ path {
     text-align: center;
     display: inline-block;
     padding: 2px;
-    font-size: 8px;
-    font-size: 1vw;
+    font-size: 0.5em;
     background: #51b603;
     border: 0px;
     rx: 4px;
     ry: 4px;
     pointer-events: none;
 }
-/*
-.tooltip {
+
+.dataPanel {
   position: absolute;
-  text-align: center;
-  width: 100px;
-  height: 28px;
-  padding: 2px;
-  font: 12px sans-serif;
-  background: #51b603;
+  width: 100%;
+  /*overflow: scroll;*/
+  font-size: 0.75em;
+  background: #ccc;
   border: 0px;
   pointer-events: none;
-  color: red;
-}*/
+}
 
 .data {
   text-align: right;
