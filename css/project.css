@@ -1,0 +1,115 @@
+.project.header {
+  margin-top: 3rem;
+  text-align: left; }
+
+.quote {
+  margin: 0 50px 0 50px;
+}
+
+footer {
+  margin-top: 50px;
+  border-width: 1px 0 0 0;
+  border-style: solid;
+  border-color: #51b603;
+}
+
+nav ul {
+  list-style: none;
+  font-weight: normal;
+}
+
+nav ul li {
+  display: inline;
+  margin-right: 20px;
+  /*flow-into: 100%;*/
+}
+
+footer ul {
+  list-style: none;
+  font-weight: normal;
+}
+
+footer ul li {
+  display: inline;
+  margin-right: 20px;
+  /*flow-into: 100%;*/
+}
+
+img.project {
+  width: 100%;
+}
+
+/* Larger than phone */
+@media (min-width: 750px) {
+  .project.header {
+    margin-top: 6rem; }
+}
+
+.background {
+  fill: none;
+  stroke: #ccc;
+  pointer-events: all;
+}
+
+path {
+  fill: #ccc;
+  cursor: pointer;
+}
+
+.active.remain {
+  fill: #FFE900;
+}
+
+.active.leave {
+  fill: #16B5E5;
+}
+
+.mesh {
+  fill: none;
+  stroke: #fff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#modal {
+  position: fixed;
+  left: 20px;
+  top: 20px;
+  z-index: 1;
+  background: white;
+}
+
+.data {
+  text-align: right;
+}
+
+.stat {
+  text-align: right;
+}
+
+tr {
+  border-bottom: 1px solid #ddd;
+}
+
+td {
+  font-size: 10px;
+}
+
+/*svg {
+  position: relative;
+}*/
+
+.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    vertical-align: top;
+    overflow: hidden;
+}
+
+.svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    left: 0;
+}
