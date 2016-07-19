@@ -2,14 +2,47 @@
 <html>
 <head>
   <title>Brexit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- link to Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto+Slab" rel="stylesheet">
+  <!-- link to main stylesheet -->
+  <link rel="stylesheet" type="text/css" href="/css/skeleton.css">
+  <link rel="stylesheet" type="text/css" href="/css/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/css/project.css">
+  <link rel="shortcut icon" type="image/png" href="/resources/favicon-16x16.png">
   <meta charset="utf-8" />
-  <link type="text/css" rel="stylesheet" href="css/brexit.css" />
-</head>
   <script src="libraries/d3.min.js"></script>
   <script src="libraries/topojson.v1.min.js"></script>
   <script src="libraries/d3-zoom.v1.min.js"></script>
-  <script src="libraries/colorbrewer.js"></script>
   <script src="libraries/brexit.js"></script>
 </head>
-<body onload="dataViz()"></body>
+<body onload="dataViz()">
+  <div class="container">
+    <div class="project header">
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/projects">Projects</a></li>
+          <li><a href="/blog">Blog</a></li>
+        </ul>
+      </nav>
+    </div>
+    <h1>Brexit</h1>
+    <div class="row">
+      <div id="blurb" class="six columns">
+        <p> On June 23, 2016 the people of the United Kingdom of Great Britain and Northern Ireland voted by a significant margin to leave the European Union.  Colloqually known as 'Brexit' (Br[itish] Exit), the referendum was described by the <em>Irish Times</em> editorial of Saturday, June 25 as a 'bewildering act of self harm'.  Of course, opinion varied widely across the UK.  Notably in Scotland, London and Northern Ireland - the only regions where a majority of people voted to remain in the EU.</p>
+      </div>
+      <div id="map" class="six columns">
+      </div>
+    </div>
+    <footer>
+      <ul>
+        <li><a href="http://twitter.com/danoscarmike">Twitter</a></li>
+        <li><a href="https://github.com/danoscarmike">GitHub</a></li>
+        <li><a href="/blog/atom.xml">Blogfeed</a></li>
+      </ul>
+    </footer>
+  </div>
+</body>
 </html>

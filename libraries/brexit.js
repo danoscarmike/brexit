@@ -2,38 +2,37 @@
 function dataViz() {
 
   //set common variables
-  var widthUK = 480;
-  var heightUK = 960;
+  var widthUK = parseInt(d3.select("#blurb").style("width"));
+  var heightUK = parseInt(d3.select('#blurb').style("height"));
+
   var active = d3.select(null);
 
   //initiate projection for United Kingdom
   var projection = d3.geoAlbers()
-                      .center([0, 54.5])
-                      .rotate([4.4, 0])
+                      .rotate([4.4, 0, 0])
                       .parallels([50, 60]);
 
   //d3.v4 zoom object, set scale extent to 50
   var zoom = d3.zoom()
-    .translateExtent([0,0],[widthUK/2,heightUK/2])
     .scaleExtent([1,50])
     .on("zoom", zoomed);
 
   var pathUK = d3.geoPath().projection(projection);
-  // var pathGI = d3.geoPath().projection(projectionGI);
 
-  var svgUK = d3.select("body").append("svg")
+  var svgUK = d3.select("#map")
+              .append("svg")
               .attr("width",widthUK)
               .attr("height",heightUK)
               .on("clicked",stopped,true);
 
   svgUK.append("rect")
+    .attr("preserveAspectRatio", "xMinYMin meet")
     .attr("class", "background")
     .attr("width", widthUK)
     .attr("height", heightUK)
     .on("click", reset);
 
-  var g = svgUK.append("g").style("stroke-width", "0.5px");
-  // var g2 = svgUK.append("g").style("stroke-width", "0.5px");
+  var g = svgUK.append("g").style("stroke-width", "0.5px")
 
   svgUK.call(zoom);
 
@@ -50,7 +49,7 @@ function dataViz() {
       dy = bounds[1][1] - bounds[0][1],
       x = (bounds[0][0] + bounds[1][0]) / 2,
       y = (bounds[0][1] + bounds[1][1]) / 2,
-      scale = 0.9 / Math.max(dx / widthUK, dy / heightUK),
+      scale = 0.95 / Math.max(dx / widthUK, dy / heightUK),
       tx = widthUK / 2 - scale * x
       ty = heightUK / 2 - scale * y;
 
@@ -167,7 +166,4 @@ function dataViz() {
       return "leave"
     }
   }
-
 }
-
-//test comment
