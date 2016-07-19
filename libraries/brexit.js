@@ -2,12 +2,11 @@
 function dataViz() {
 
   //set common variables
-  var widthUK = parseInt(d3.select("#map").style("width"));
-  // var widthUK = 960;
-  // var heightUK = parseInt(d3.select('#map').style("height"));
-  var mapRatio = 2;
-  var heightUK = widthUK * mapRatio;
-  // var heightUK = 1060;
+  var widthUK = parseInt(d3.select("#blurb").style("width"));
+  var heightUK = parseInt(d3.select('#blurb').style("height"));
+  // var mapRatio = 1.6;
+  // var heightUK = widthUK * mapRatio;
+
   var active = d3.select(null);
 
   //initiate projection for United Kingdom
@@ -27,23 +26,21 @@ function dataViz() {
   var pathUK = d3.geoPath().projection(projection);
 
   var svgUK = d3.select("#map")
-              .classed("svg-container",true)
               .append("svg")
-              // .attr("preserveAspectRatio", "xMinYMin meet")
               // .attr("viewBox", "0 0 400 600")
-              .classed("svg-content-responsive",true)
+              // .classed("svg-content-responsive",true)
               .attr("width",widthUK)
               .attr("height",heightUK)
               .on("clicked",stopped,true);
 
-  svgUK.append("rect")
-    .attr("class", "background")
-    .attr("width", widthUK)
-    .attr("height", heightUK)
-    .on("click", reset);
+  // svgUK.append("rect")
+  //   .attr("preserveAspectRatio", "xMinYMin meet")
+  //   .attr("class", "background")
+  //   .attr("width", widthUK)
+  //   .attr("height", heightUK)
+  //   .on("click", reset);
 
-  var g = svgUK.append("g").style("stroke-width", "0.5px");
-  // var g2 = svgUK.append("g").style("stroke-width", "0.5px");
+  var g = svgUK.append("g").style("stroke-width", "0.5px")
 
   svgUK.call(zoom);
 
@@ -60,7 +57,7 @@ function dataViz() {
       dy = bounds[1][1] - bounds[0][1],
       x = (bounds[0][0] + bounds[1][0]) / 2,
       y = (bounds[0][1] + bounds[1][1]) / 2,
-      scale = 0.9 / Math.max(dx / widthUK, dy / heightUK),
+      scale = 0.95 / Math.max(dx / widthUK, dy / heightUK),
       tx = widthUK / 2 - scale * x
       ty = heightUK / 2 - scale * y;
 
