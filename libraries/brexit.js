@@ -44,7 +44,13 @@ function dataViz() {
   var statPanel = d3.select("#map")
     .append("div")
     .attr("class", "dataPanel")
+    .attr("id", "statPanel")
     .style("opacity", 0);
+
+  //create a div for the modal dialog box which will contain the area's results
+  d3.text("resources/modal.html", function(data) {
+    d3.select("#statPanel").append("div").attr("id", "modal").html(data);
+  });
 
   //import the topojson file for UK geography and referendum results
   d3.json("resources/UKtopo.json", function(error, uk) {
@@ -115,11 +121,46 @@ function dataViz() {
       .duration(750)
       .style("opacity", 0.8)
       .style("left",0)
-      .style("top",heightUK/2+'px')
-      .style("height", heightUK/2+'px');
+      .style("top",heightUK/2 + 'px')
+      .style("height", heightUK/2 + 'px');
 
-    // statPanel.html(d.properties.NAME);
-    statPanel.html(d3.text("resources/modal.html"));
+    var name = d.properties.NAME,
+        region = d.properties.Region,
+        remain = d.properties.Remain,
+        pctr = d.properties.Pct_Remain,
+        leave = d.properties.Leave,
+        pctl = d.properties.Pct_Leave,
+        rejected = d.properties.Rejected_B,
+        pctj = d.properties.Pct_Reject,
+        total = d.properties.Votes_Cast;
+
+    //create a div for the modal dialog box which will contain the area's results
+    d3.text("resources/modal.html", function(data) {
+      d3.select("#statPanel").html(data);
+    });
+
+    d3.select("#area").append("span").text(name);
+
+    // statPanel.append("div")
+    //   .attr("id","name")
+    //   .text(d.properties.NAME)
+    //   .append("div")
+    //   .attr("id","region")
+    //   .text("(" + d.properties.Region + ")")
+    //
+    // statPanel.append("div")
+    //   .attr("class","stats")
+    //   .append("div")
+    //   .attr("id","remain")
+    //
+    //
+    //
+    //   .append("div")
+    //   .attr("id","row-header")
+    //   .text("Remain")
+    //   .append("div")
+    //   .attr("id","cell-data")
+    //   .text(remain);
 
     var bounds = pathUK.bounds(d),
       dx = bounds[1][0] - bounds[0][0],
@@ -127,7 +168,7 @@ function dataViz() {
       x = (bounds[0][0] + bounds[1][0]) / 2,
       y = (bounds[0][1] + bounds[1][1]) / 2,
       //scale and translate to fit in top half of svg
-      scale = 0.5 / Math.max(dx / widthUK, dy / heightUK),
+      scale = 0.45 / Math.max(dx / widthUK, dy / heightUK),
       tx = widthUK / 2 - scale * x
       ty = heightUK / 4 - scale * y;
 
@@ -141,39 +182,48 @@ function dataViz() {
     //   d3.select(".dataPanel").append("div").attr("id", "modal").html(data);
     // });
 
-    var name = d.properties.NAME,
-        region = d.properties.Region,
-        remain = d.properties.Remain,
-        pctr = d.properties.Pct_Remain,
-        leave = d.properties.Leave,
-        pctl = d.properties.Pct_Leave,
-        rejected = d.properties.Rejected_B,
-        pctj = d.properties.Pct_Reject,
-        total = d.properties.Votes_Cast;
+    // var name = d.properties.NAME,
+    //     region = d.properties.Region,
+    //     remain = d.properties.Remain,
+    //     pctr = d.properties.Pct_Remain,
+    //     leave = d.properties.Leave,
+    //     pctl = d.properties.Pct_Leave,
+    //     rejected = d.properties.Rejected_B,
+    //     pctj = d.properties.Pct_Reject,
+    //     total = d.properties.Votes_Cast;
 
-		document.getElementById('stat1').innerHTML="Remain",
-            document.getElementById('stat2').innerHTML="Leave",
-            document.getElementById('stat3').innerHTML="Rejected",
-            document.getElementById('stat4').innerHTML="Total",
-            document.getElementById('area').innerHTML=name,
-            document.getElementById('region').innerHTML="("+region+")",
-            document.getElementById('remain').innerHTML=parseFloat(remain),
-            document.getElementById('pctr').innerHTML=parseFloat(pctr)+"%",
-            document.getElementById('leave').innerHTML=parseFloat(leave),
-            document.getElementById('pctl').innerHTML=parseFloat(pctl)+"%",
-            document.getElementById('rejected').innerHTML=parseFloat(rejected),
-            document.getElementById('pctj').innerHTML=parseFloat(pctj)+"%",
-            document.getElementById('total').innerHTML=parseFloat(total);
+		// return document.getElementById('stat1').innerHTML="Remain",
+    //         document.getElementById('stat2').innerHTML="Leave",
+    //         document.getElementById('stat3').innerHTML="Rejected",
+    //         document.getElementById('stat4').innerHTML="Total",
+    //         document.getElementById('area').innerHTML=name,
+    //         document.getElementById('region').innerHTML="("+region+")",
+    //         document.getElementById('remain').innerHTML=parseFloat(remain),
+    //         document.getElementById('pctr').innerHTML=parseFloat(pctr)+"%",
+    //         document.getElementById('leave').innerHTML=parseFloat(leave),
+    //         document.getElementById('pctl').innerHTML=parseFloat(pctl)+"%",
+    //         document.getElementById('rejected').innerHTML=parseFloat(rejected),
+    //         document.getElementById('pctj').innerHTML=parseFloat(pctj)+"%",
+    //         document.getElementById('total').innerHTML=parseFloat(total);
   }
 
   function reset() {
+    //remove active class
     active.classed("active", false);
+
+    //point active variable to NULL
     active = d3.select(null);
+
+    //reopen path elements for mouseover/mousemove listener function
     d3.selectAll("path").attr("locked","open");
+
+    //reset map to full extent
     svgUK.transition()
       .duration(750)
       .style("stroke-width", "0.5px")
       .call(zoom.transform,d3.zoomIdentity);
+
+    //make statPanel tranparent
     statPanel.style('opacity', 0)
 
     return document.getElementById('stat1').innerHTML="",
