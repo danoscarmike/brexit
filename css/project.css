@@ -82,16 +82,29 @@ path {
 .tooltip {
     position: absolute;
     text-align: center;
-    width: 100px;
-    height: 28px;
+    display: inline-block;
     padding: 2px;
-    font: 12px sans-serif;
-    fill: lightsteelblue;
+    font-size: 8px;
+    font-size: 1vw;
+    background: #51b603;
     border: 0px;
     rx: 4px;
     ry: 4px;
     pointer-events: none;
 }
+/*
+.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 100px;
+  height: 28px;
+  padding: 2px;
+  font: 12px sans-serif;
+  background: #51b603;
+  border: 0px;
+  pointer-events: none;
+  color: red;
+}*/
 
 .data {
   text-align: right;

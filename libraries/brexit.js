@@ -20,25 +20,26 @@ function dataViz() {
   var pathUK = d3.geoPath().projection(projection);
 
   var svgUK = d3.select("#map")
+              .style("position","relative")
               .append("svg")
               .attr("width",widthUK)
               .attr("height",heightUK)
               .on("clicked",stopped,true);
 
   svgUK.append("rect")
-    .attr("preserveAspectRatio", "xMinYMin meet")
     .attr("class", "background")
-    .attr("width", widthUK)
-    .attr("height", heightUK)
+    .attr("width", "100%")
+    .attr("height", "100%")
     .on("click", reset);
 
   var g = svgUK.append("g").style("stroke-width", "0.5px")
 
   svgUK.call(zoom);
 
-  var nameTip = svgUK.append("rect")
+  var nameTip = d3.select("#map")
+    .append("div")
     .attr("class", "tooltip")
-    .style("fill-opacity", 0);
+    .style("opacity", 0);
 
   //import the topojson file for UK geography and referendum results
   d3.json("resources/UKtopo.json", function(error, uk) {
@@ -67,22 +68,8 @@ function dataViz() {
       .attr("d", pathUK)
       .attr("class",voteToggle)
       .on("mouseover", tooltipName)
-      .on('mousemove', function(d) {
-            nameTip.classed('hidden', false)
-                .attr('x', d3.mouse(svgUK.node())[0] + 15 + 'px')
-                .attr('y', d3.mouse(svgUK.node())[1] - 35 + 'px')
-            nameTip.append("text")
-                .attr("fill","black")
-                .attr("font-size","48px")
-                .attr("x", 25)
-                .attr("y", 10)
-                .text("test");
-              })
-      .on("mouseout", function(d) {
-            nameTip.transition()
-                .duration(200)
-                .style("fill-opacity", 0)
-              })
+      .on('mousemove', tooltipName)
+      .on('mouseout', tooltipHide)
       .on("click",clicked);
 
     g.append("path")
@@ -100,23 +87,22 @@ function dataViz() {
   function tooltipName(d) {
     nameTip.transition()
           .duration(200)
-          .style("fill-opacity", 0.95)
-          .attr('x', d3.mouse(svgUK.node())[0] + 15 + 'px')
-          .attr('y', d3.mouse(svgUK.node())[1] - 35 + 'px');
+          .style("opacity", 0.75);
 
-    nameTip.append("text")
-        .attr("x",25)
-        .attr("y",10)
-        .attr("fill","black")
-        .attr("font-size","12px")
-        .text("test");
+    nameTip.html(d.properties.NAME)
+        .style('left', d3.mouse(this)[0] + 'px')
+        .style('top', d3.mouse(this)[1] - 35 + 'px');
+  }
+
+  function tooltipHide() {
+    nameTip.transition()
+        .duration(100)
+        .style("opacity", 0)
   }
 
   function clicked(d) {
     //turn off visibility of tooltip
-    nameTip.style('fill-opacity', 0);
-    //stop propagation so tooltip doesn't reappear until reset
-    // d3.event.stopPropagation();
+    nameTip.style('opacity', 0);
 
     if (active.node() === this) return reset();
     active.classed("active", false);
@@ -136,29 +122,29 @@ function dataViz() {
       .style("stroke-width", 0.5/scale+"px")
       .call(zoom.transform,d3.zoomTransform(this).translate(tx,ty).scale(scale));
 
-    var name = d.properties.NAME,
-        region = d.properties.Region,
-        remain = d.properties.Remain,
-        pctr = d.properties.Pct_Remain,
-        leave = d.properties.Leave,
-        pctl = d.properties.Pct_Leave,
-        rejected = d.properties.Rejected_B,
-        pctj = d.properties.Pct_Reject,
-        total = d.properties.Votes_Cast;
-
-		return document.getElementById('stat1').innerHTML="Remain",
-            document.getElementById('stat2').innerHTML="Leave",
-            document.getElementById('stat3').innerHTML="Rejected",
-            document.getElementById('stat4').innerHTML="Total",
-            document.getElementById('area').innerHTML=name,
-            document.getElementById('region').innerHTML="("+region+")",
-            document.getElementById('remain').innerHTML=parseFloat(remain),
-            document.getElementById('pctr').innerHTML=parseFloat(pctr)+"%",
-            document.getElementById('leave').innerHTML=parseFloat(leave),
-            document.getElementById('pctl').innerHTML=parseFloat(pctl)+"%",
-            document.getElementById('rejected').innerHTML=parseFloat(rejected),
-            document.getElementById('pctj').innerHTML=parseFloat(pctj)+"%",
-            document.getElementById('total').innerHTML=parseFloat(total);
+    // var name = d.properties.NAME,
+    //     region = d.properties.Region,
+    //     remain = d.properties.Remain,
+    //     pctr = d.properties.Pct_Remain,
+    //     leave = d.properties.Leave,
+    //     pctl = d.properties.Pct_Leave,
+    //     rejected = d.properties.Rejected_B,
+    //     pctj = d.properties.Pct_Reject,
+    //     total = d.properties.Votes_Cast;
+    //
+		// return document.getElementById('stat1').innerHTML="Remain",
+    //         document.getElementById('stat2').innerHTML="Leave",
+    //         document.getElementById('stat3').innerHTML="Rejected",
+    //         document.getElementById('stat4').innerHTML="Total",
+    //         document.getElementById('area').innerHTML=name,
+    //         document.getElementById('region').innerHTML="("+region+")",
+    //         document.getElementById('remain').innerHTML=parseFloat(remain),
+    //         document.getElementById('pctr').innerHTML=parseFloat(pctr)+"%",
+    //         document.getElementById('leave').innerHTML=parseFloat(leave),
+    //         document.getElementById('pctl').innerHTML=parseFloat(pctl)+"%",
+    //         document.getElementById('rejected').innerHTML=parseFloat(rejected),
+    //         document.getElementById('pctj').innerHTML=parseFloat(pctj)+"%",
+    //         document.getElementById('total').innerHTML=parseFloat(total);
   }
 
   function reset() {
@@ -170,19 +156,19 @@ function dataViz() {
       .style("stroke-width", "0.5px")
       .call(zoom.transform,d3.zoomIdentity);
 
-    return document.getElementById('stat1').innerHTML="",
-            document.getElementById('stat2').innerHTML="",
-            document.getElementById('stat3').innerHTML="",
-            document.getElementById('stat4').innerHTML="",
-            document.getElementById('area').innerHTML="",
-            document.getElementById('region').innerHTML="",
-            document.getElementById('remain').innerHTML="",
-            document.getElementById('pctr').innerHTML="",
-            document.getElementById('leave').innerHTML="",
-            document.getElementById('pctl').innerHTML="",
-            document.getElementById('rejected').innerHTML="",
-            document.getElementById('pctj').innerHTML="",
-            document.getElementById('total').innerHTML="";
+    // return document.getElementById('stat1').innerHTML="",
+    //         document.getElementById('stat2').innerHTML="",
+    //         document.getElementById('stat3').innerHTML="",
+    //         document.getElementById('stat4').innerHTML="",
+    //         document.getElementById('area').innerHTML="",
+    //         document.getElementById('region').innerHTML="",
+    //         document.getElementById('remain').innerHTML="",
+    //         document.getElementById('pctr').innerHTML="",
+    //         document.getElementById('leave').innerHTML="",
+    //         document.getElementById('pctl').innerHTML="",
+    //         document.getElementById('rejected').innerHTML="",
+    //         document.getElementById('pctj').innerHTML="",
+    //         document.getElementById('total').innerHTML="";
   }
 
   function zoomed() {
