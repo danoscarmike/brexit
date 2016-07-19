@@ -67,6 +67,7 @@ function dataViz() {
       .enter().append("path")
       .attr("d", pathUK)
       .attr("class",voteToggle)
+      .attr("locked", "open")
       .on("mouseover", tooltipName)
       .on('mousemove', tooltipName)
       .on('mouseout', tooltipHide)
@@ -85,13 +86,19 @@ function dataViz() {
   });
 
   function tooltipName(d) {
-    nameTip.transition()
-          .duration(200)
-          .style("opacity", 0.75);
+    if(d3.select(this).attr("locked") === "locked") {
+      console.log("mouseover check: TRUE (locked)");
+    }
+    else {
+      console.log("mouseover check: FALSE (not locked)");
+      nameTip.transition()
+            .duration(200)
+            .style("opacity", 0.75);
+      nameTip.html(d.properties.NAME)
+          .style('left', d3.mouse(this)[0] + 'px')
+          .style('top', d3.mouse(this)[1] - 35 + 'px');
 
-    nameTip.html(d.properties.NAME)
-        .style('left', d3.mouse(this)[0] + 'px')
-        .style('top', d3.mouse(this)[1] - 35 + 'px');
+    }
   }
 
   function tooltipHide() {
@@ -102,11 +109,12 @@ function dataViz() {
 
   function clicked(d) {
     //turn off visibility of tooltip
-    nameTip.style('opacity', 0);
+    nameTip.style('opacity', 0)
 
     if (active.node() === this) return reset();
     active.classed("active", false);
-    active = d3.select(this).classed("active", true);
+    active = d3.select(this).classed("active", true)
+              .attr("locked","locked");
 
     var bounds = pathUK.bounds(d),
       dx = bounds[1][0] - bounds[0][0],
@@ -150,6 +158,8 @@ function dataViz() {
   function reset() {
     active.classed("active", false);
     active = d3.select(null);
+
+    nameTip.attr("locked",false);
 
     svgUK.transition()
       .duration(750)
