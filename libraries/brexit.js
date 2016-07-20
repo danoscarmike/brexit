@@ -48,7 +48,7 @@ function dataViz() {
     .style("opacity", 0);
 
   //create a div for the modal dialog box which will contain the area's results
-  d3.text("resources/modal2.html", function(data) {
+  d3.text("resources/modal.html", function(data) {
     statPanel.html(data);
   });
 
@@ -115,12 +115,17 @@ function dataViz() {
     //turn off visibility of tooltip
     nameTip.style('opacity', 0)
 
-
-
     //check if already active, reset path class and attributes if yes
-    if (active.node() === this) return reset();
+    if (active.node() === this) {
+      return reset();
+    }
+    //reset current active
     active.classed("active", false);
+    //remove text from statPanel HTML (most recent data)
+    statPanel.selectAll("text").text("");
+    //set new active as the current path
     active = d3.select(this).classed("active", true);
+    //lock out mouseover and mousemove listeners
     d3.selectAll("path").attr("locked","locked");
 
     //transition in the statPanel
@@ -131,40 +136,15 @@ function dataViz() {
       .style("top",heightUK/2 + 'px')
       .style("height", heightUK/2 + 'px');
 
-    //declare data variables from data in topojson
-    var name = d.properties.NAME,
-        region = d.properties.Region,
-        remain = d.properties.Remain,
-        pctr = d.properties.Pct_Remain,
-        leave = d.properties.Leave,
-        pctl = d.properties.Pct_Leave,
-        rejected = d.properties.Rejected_B,
-        pctj = d.properties.Pct_Reject,
-        total = d.properties.Votes_Cast;
-
-    statPanel.select(".area").append("text").text(name);
-    statPanel.select(".region").append("text").text(region);
-
-    // statPanel.append("div")
-    //   .attr("id","name")
-    //   .text(d.properties.NAME)
-    //   .append("div")
-    //   .attr("id","region")
-    //   .text("(" + d.properties.Region + ")")
-    //
-    // statPanel.append("div")
-    //   .attr("class","stats")
-    //   .append("div")
-    //   .attr("id","remain")
-    //
-    //
-    //
-    //   .append("div")
-    //   .attr("id","row-header")
-    //   .text("Remain")
-    //   .append("div")
-    //   .attr("id","cell-data")
-    //   .text(remain);
+    statPanel.select("#area").append("text").text(d.properties.NAME);
+    statPanel.select("#region").append("text").text("    ("+d.properties.Region+")");
+    statPanel.select("#remain").append("text").text(d.properties.Remain);
+    statPanel.select("#pct-remain").append("text").text(d.properties.Pct_Remain + "%");
+    statPanel.select("#leave").append("text").text(d.properties.Leave);
+    statPanel.select("#pct-leave").append("text").text(d.properties.Pct_Leave + "%");
+    statPanel.select("#rejected").append("text").text(d.properties.Rejected_B);
+    statPanel.select("#pct-rejected").append("text").text(d.properties.Pct_Reject + "%");
+    statPanel.select("#total").append("text").text(d.properties.Votes_Cast);
 
     var bounds = pathUK.bounds(d),
       dx = bounds[1][0] - bounds[0][0],
@@ -180,37 +160,7 @@ function dataViz() {
       .duration(750)
       .style("stroke-width", 0.5/scale+"px")
       .call(zoom.transform,d3.zoomTransform(this).translate(tx,ty).scale(scale));
-
-    //create a div for the modal dialog box which will contain the area's results
-    // d3.text("resources/modal.html", function(data) {
-    //   d3.select(".dataPanel").append("div").attr("id", "modal").html(data);
-    // });
-
-    // var name = d.properties.NAME,
-    //     region = d.properties.Region,
-    //     remain = d.properties.Remain,
-    //     pctr = d.properties.Pct_Remain,
-    //     leave = d.properties.Leave,
-    //     pctl = d.properties.Pct_Leave,
-    //     rejected = d.properties.Rejected_B,
-    //     pctj = d.properties.Pct_Reject,
-    //     total = d.properties.Votes_Cast;
-
-		// return document.getElementById('stat1').innerHTML="Remain",
-    //         document.getElementById('stat2').innerHTML="Leave",
-    //         document.getElementById('stat3').innerHTML="Rejected",
-    //         document.getElementById('stat4').innerHTML="Total",
-    //         document.getElementById('area').innerHTML=name,
-    //         document.getElementById('region').innerHTML="("+region+")",
-    //         document.getElementById('remain').innerHTML=parseFloat(remain),
-    //         document.getElementById('pctr').innerHTML=parseFloat(pctr)+"%",
-    //         document.getElementById('leave').innerHTML=parseFloat(leave),
-    //         document.getElementById('pctl').innerHTML=parseFloat(pctl)+"%",
-    //         document.getElementById('rejected').innerHTML=parseFloat(rejected),
-    //         document.getElementById('pctj').innerHTML=parseFloat(pctj)+"%",
-    //         document.getElementById('total').innerHTML=parseFloat(total);
   }
-
 
   function reset() {
     //remove active class
@@ -229,21 +179,9 @@ function dataViz() {
       .call(zoom.transform,d3.zoomIdentity);
 
     //make statPanel tranparent
-    statPanel.style('opacity', 0)
-
-    return document.getElementById('stat1').innerHTML="",
-            document.getElementById('stat2').innerHTML="",
-            document.getElementById('stat3').innerHTML="",
-            document.getElementById('stat4').innerHTML="",
-            document.getElementById('area').innerHTML="",
-            document.getElementById('region').innerHTML="",
-            document.getElementById('remain').innerHTML="",
-            document.getElementById('pctr').innerHTML="",
-            document.getElementById('leave').innerHTML="",
-            document.getElementById('pctl').innerHTML="",
-            document.getElementById('rejected').innerHTML="",
-            document.getElementById('pctj').innerHTML="",
-            document.getElementById('total').innerHTML="";
+    statPanel.style('opacity', 0);
+    //remove text from statPanel HTML
+    statPanel.selectAll("text").text("");
   }
 
   function zoomed() {

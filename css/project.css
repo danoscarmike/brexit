@@ -97,12 +97,44 @@ path {
   width: 100%;
   /*overflow: scroll;*/
   font-size: 0.75em;
-  background: #ccc;
+  background: #ddd;
   border: 0px;
   pointer-events: none;
 }
 
-.row-header {
-  display: inline;
+.panel-header {
+  display: block;
+  padding-left: 1%;
+}
+
+.table-header {
+  text-align: right;
+  font-weight: 800;
+}
+
+.stat {
+  font-weight: 600;
   text-align: left;
+  width: 30%;
+}
+
+.data {
+  text-align: right;
+  width: 30%;
+  font-size: 0.8em;
+}
+
+tr {
+  border-bottom: 10px;
+  border-color: #fff;
+}
+
+#area {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+#region {
+  font-size: 1.1em;
+  font-weight: 500;
 }
