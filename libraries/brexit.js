@@ -48,8 +48,8 @@ function dataViz() {
     .style("opacity", 0);
 
   //create a div for the modal dialog box which will contain the area's results
-  d3.text("resources/modal.html", function(data) {
-    d3.select("#statPanel").append("div").attr("id", "modal").html(data);
+  d3.text("resources/modal2.html", function(data) {
+    statPanel.html(data);
   });
 
   //import the topojson file for UK geography and referendum results
@@ -91,6 +91,7 @@ function dataViz() {
       .attr("d", pathUK);
   });
 
+  //instantiate mouseover/mousemove listener
   function tooltipName(d) {
     if(d3.select(this).attr("locked") === "open") {
       nameTip.transition()
@@ -102,21 +103,27 @@ function dataViz() {
     }
   }
 
+  //instatiate mouseout listener
   function tooltipHide() {
     nameTip.transition()
         .duration(100)
         .style("opacity", 0)
   }
 
+  //instantiate clicked listener
   function clicked(d) {
     //turn off visibility of tooltip
     nameTip.style('opacity', 0)
 
+
+
+    //check if already active, reset path class and attributes if yes
     if (active.node() === this) return reset();
     active.classed("active", false);
     active = d3.select(this).classed("active", true);
     d3.selectAll("path").attr("locked","locked");
 
+    //transition in the statPanel
     statPanel.transition()
       .duration(750)
       .style("opacity", 0.8)
@@ -124,6 +131,7 @@ function dataViz() {
       .style("top",heightUK/2 + 'px')
       .style("height", heightUK/2 + 'px');
 
+    //declare data variables from data in topojson
     var name = d.properties.NAME,
         region = d.properties.Region,
         remain = d.properties.Remain,
@@ -134,12 +142,8 @@ function dataViz() {
         pctj = d.properties.Pct_Reject,
         total = d.properties.Votes_Cast;
 
-    //create a div for the modal dialog box which will contain the area's results
-    d3.text("resources/modal.html", function(data) {
-      d3.select("#statPanel").html(data);
-    });
-
-    d3.select("#area").append("span").text(name);
+    statPanel.select(".area").append("text").text(name);
+    statPanel.select(".region").append("text").text(region);
 
     // statPanel.append("div")
     //   .attr("id","name")
@@ -206,6 +210,7 @@ function dataViz() {
     //         document.getElementById('pctj').innerHTML=parseFloat(pctj)+"%",
     //         document.getElementById('total').innerHTML=parseFloat(total);
   }
+
 
   function reset() {
     //remove active class

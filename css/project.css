@@ -102,37 +102,7 @@ path {
   pointer-events: none;
 }
 
-.data {
-  text-align: right;
-}
-
-.stat {
-  text-align: right;
-}
-
-tr {
-  border-bottom: 1px solid #ddd;
-}
-
-td {
-  font-size: 10px;
-}
-
-/*svg {
-  position: relative;
-}*/
-
-.svg-container {
-    display: inline-block;
-    position: relative;
-    width: 100%;
-    padding-bottom: 100%;
-    vertical-align: top;
-    overflow: hidden;
-}
-
-.svg-content-responsive {
-    display: inline-block;
-    position: absolute;
-    left: 0;
+.row-header {
+  display: inline;
+  text-align: left;
 }
